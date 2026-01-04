@@ -1,0 +1,29 @@
+spring:
+  security:
+    user:
+      name: <your username>
+      password: <your password>
+
+app:
+  oauth2:
+    clients:
+      - id: task-manager-client1
+        name: Task Manager Client1
+        public-client: false
+        secret: <your secret>
+        scopes:
+          - task.read
+          - task.write
+
+      - id: task-manager-client
+        name: Task Manager Client
+        public-client: true
+        redirect-uris:
+          - http://${spring.security.oauth2.authorizationserver.issuer}/login/oauth2/code/task-manager-client
+        post-logout-redirect-uris:
+          - http://${spring.security.oauth2.authorizationserver.issuer}/
+        scopes:
+          - openid
+          - profile
+          - task.read
+          - task.write
