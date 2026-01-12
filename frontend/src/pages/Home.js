@@ -44,7 +44,7 @@ function Home() {
 
             if (action === "login") {
                 alert("Login successful!");
-                //navigate("/dashboard");
+                navigate("/tasks");
             } else {
                 alert("Registration successful! Please login below.");
                 navigate("/");
