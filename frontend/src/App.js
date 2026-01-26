@@ -17,14 +17,15 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<LoginRegister setIsAuthenticated={setIsAuthenticated}/>} />
-          <Route 
+          {/* <Route 
             path="/app" 
             element={
                 <ProtectedRoute isAuthenticated={isAuthenticated}>
                   <DashboardsLayout />
                 </ProtectedRoute>
             }
-          >
+          > */}
+          <Route path="/app" element={<DashboardsLayout />} >
             <Route path="userdashboard" element={<UserDashboard />} />
             <Route path="teamdashboard" element={<TeamDashboard />} />
             <Route path="calendar" element={<Calendar />} />
