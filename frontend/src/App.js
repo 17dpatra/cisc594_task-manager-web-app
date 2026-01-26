@@ -7,7 +7,10 @@ import UserDashboard from './pages/UserDashboard';
 import TeamDashboard from './pages/TeamDashboard';
 import Calendar from './pages/Calendar';
 import AdminControls from './pages/AdminControls';
+import { AuthContext } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+
+//TODO: once register and login endpoints are working, uncomment protected route stuff
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false); //only allows other routes to be accessible after successful login

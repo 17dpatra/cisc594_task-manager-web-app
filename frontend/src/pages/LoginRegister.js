@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 
-function LoginRegister({ setIsAuthenticated }) {
+function LoginRegister({ setIsAuthenticated }) {    
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [role, setRole] = useState('user'); //default role is 'user'
