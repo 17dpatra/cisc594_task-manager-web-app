@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 
-function Home() {
+function LoginRegister({ setIsAuthenticated }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [role, setRole] = useState('user'); //default role is 'user'
@@ -44,10 +44,12 @@ function Home() {
 
             if (action === "login") {
                 alert("Login successful!");
-                navigate("/tasks");
+                setIsAuthenticated(true); //setting this makes all the other endpoints accessible within the app
+                navigate("/app");
             } else {
-                alert("Registration successful! Please login below.");
-                navigate("/");
+                alert("Registration successful!");
+                setIsAuthenticated(true); //setting this makes all the other endpoints accessible within the app
+                navigate("/app");
             }
         }
         catch (error) {
@@ -108,4 +110,4 @@ function Home() {
     );
 }
 
-export default Home;
+export default LoginRegister;
