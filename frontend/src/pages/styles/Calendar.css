@@ -1,0 +1,10 @@
+/* To center align 'Your Calendar' header */
+.content h2 {
+  text-align: center;
+}
+
+h2 {
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+  color: #555;
+}

@@ -3,6 +3,12 @@
   text-align: center;
 }
 
+h2 {
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+  color: #555;
+}
+
 /* For add/edit task popup */
 .modal-overlay {
   position: fixed;

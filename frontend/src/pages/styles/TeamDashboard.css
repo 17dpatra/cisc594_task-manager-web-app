@@ -1,6 +1,12 @@
-/* To center align 'Your Tasks' header */
+/* To center align 'Your Team's Tasks' header */
 .content h2 {
   text-align: center;
+}
+
+h2 {
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+  color: #555;
 }
 
 /* For filtering tasks */
