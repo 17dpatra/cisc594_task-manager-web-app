@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import './styles/UserDashboard.css';
+import { AuthContext } from '../context/AuthContext';
 
 //TODO: call valid API for getting, adding, editing, deleting user's tasks
 //TODO: call valid API for getting all assignee options
@@ -30,6 +31,7 @@ const statusColors = {
 };
 
 function UserDashboard() {
+    const { user } = useContext(AuthContext); //user's details
     const [currentDate] = useState(new Date());
 
     const [openStatus, setOpenStatus] = useState(null);

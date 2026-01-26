@@ -1,11 +1,13 @@
-import {useState, useEffect} from "react";
+import { useState, useEffect, useContext } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import './styles/Calendar.css';
+import { AuthContext } from '../context/AuthContext';
 
 //TODO: call valid API for getting ALL tasks in user's team
 
 function Calendar() {
+    const { user } = useContext(AuthContext); //user's details
     const [tasks, setTasks] = useState([]);
 
     //get all tasks in user's team

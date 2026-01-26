@@ -1,5 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import './styles/TeamDashboard.css';
+import { AuthContext } from '../context/AuthContext';
+
 
 //TODO: call valid API for getting ALL tasks in user's team
 //TODO: call valid API for getting all assignee options
@@ -30,6 +32,7 @@ const statusColors = {
 };
 
 function TeamDashboard() {
+    const { user } = useContext(AuthContext); //user's details
     const [currentDate] = useState(new Date());
     const [openStatus, setOpenStatus] = useState(null);
 

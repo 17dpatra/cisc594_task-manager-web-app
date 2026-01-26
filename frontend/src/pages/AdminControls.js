@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import './styles/Calendar.css';
-
+import { AuthContext } from '../context/AuthContext';
 
 //TODO: call valid API for getting, adding, editing, deleting teams
 //TODO: call valid API for getting all users
-
 
 //dummy values for testing
 //team.members = user IDs
@@ -25,6 +24,7 @@ const allUsers =
 
 
 function AdminControls() {
+    const { user } = useContext(AuthContext); //user's details
     const [openTeamId, setOpenTeamId] = useState(null);
 
     //toggles opening and closing accordions

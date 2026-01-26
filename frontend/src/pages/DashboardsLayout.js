@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import './styles/DashboardsLayout.css';
+import { AuthContext } from '../context/AuthContext';
 
 function DashboardsLayout() {
+  const { user } = useContext(AuthContext); //user's details
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const location = useLocation();
 
-  //check if we're on the root path (no child route selected)
+  //check if on the root path (no child route selected)
   //controls when to view dashboard directions and when to hide
   const isRootPath = location.pathname === '/app';
 
@@ -48,12 +50,10 @@ function DashboardsLayout() {
             <h2 className="mb-4">Welcome to your Task Manager</h2>
             <br/>
             <p>Click on the Dashboards tab to view:</p>
-            <p>
-              <ul>
-                <li>Your user dashboard with only tasks assigned to you.</li>
-                <li>The team's dashboard where you can see all the tasks assigned to your team.</li>
-              </ul>
-            </p>
+            <ul>
+              <li>Your user dashboard with only tasks assigned to you.</li>
+              <li>The team's dashboard where you can see all the tasks assigned to your team.</li>
+            </ul>
             <p>Click on the Calendar tab to view when each task is due.</p>
             <p>Click on the Admin Controls tab to make changes to your team.</p>
           </>
