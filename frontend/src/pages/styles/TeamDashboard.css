@@ -1,0 +1,55 @@
+/* To center align 'Your Tasks' header */
+.content h2 {
+  text-align: center;
+}
+
+/* For filtering tasks */
+.filter-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: nowrap;
+}
+
+.filter-controls label {
+  margin: 0;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.filter-controls select {
+  width: auto;
+  min-width: fit-content;
+  flex-shrink: 0;
+  padding: 0.375rem 0.75rem;
+}
+
+.filter-controls input {
+  flex: 0 1 500px;
+  min-width: 50px;
+}
+
+
+/* For select dropdowns to look more like bootstrap */
+select {
+  width: 100%;
+  padding: 0.375rem 0.75rem;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  font-family: inherit;
+  background-color: white;
+  cursor: pointer;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+select:focus {
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+select:hover {
+  border-color: #adb5bd;
+}

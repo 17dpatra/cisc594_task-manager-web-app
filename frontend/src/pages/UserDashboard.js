@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import './styles/UserDashboard.css';
 
-//TODO: call valid API for getting, adding, editing, deleting tasks
+//TODO: call valid API for getting, adding, editing, deleting user's tasks
 //TODO: call valid API for getting all assignee options
 
 //dummy values for testing
@@ -30,7 +30,7 @@ const statusColors = {
 };
 
 function UserDashboard() {
-    const [currentDate] = useState(new Date())
+    const [currentDate] = useState(new Date());
 
     const [openStatus, setOpenStatus] = useState(null);
 
@@ -44,12 +44,12 @@ function UserDashboard() {
     const [editingTask, setEditingTask] = useState(null);
 
     //create and edit task form fields
-    const [taskName, setTaskName] = useState("")
-    const [taskDescription, setTaskDescription] = useState("")
-    const [taskDeadline, setTaskDeadline] = useState("")
-    const [taskAssignee, setTaskAssignee] = useState("")
-    const [taskStatus, setTaskStatus] = useState("Created")
-    const [taskPriority, setTaskPriority] = useState("Medium")
+    const [taskName, setTaskName] = useState("");
+    const [taskDescription, setTaskDescription] = useState("");
+    const [taskDeadline, setTaskDeadline] = useState("");
+    const [taskAssignee, setTaskAssignee] = useState("");
+    const [taskStatus, setTaskStatus] = useState("Created");
+    const [taskPriority, setTaskPriority] = useState("Medium");
 
     //get tasks
     const [tasks, setTasks] = useState(initialTasks);// useState([]) - should be null in the beginning. Just set to initial tasks as a dummy for now
@@ -64,19 +64,19 @@ function UserDashboard() {
     //fetch tasks from backend on component mount
     const getTasks = async () => {
         try {
-            const response = await fetch("/api/tasks", {
+            const response = await fetch("/api/tasks/username", {
                 method: "GET",
                 headers: {
                     'Content-Type': 'application/json'
                 },
-            })
+            });
             
             if (response.ok) {
                 const data = await response.json();
                 setTasks(data);
             } 
             else {
-                console.log("Failed to get tasks: ", response)
+                console.log("Failed to get tasks: ", response);
                 alert(`${response.statusText}` || `Getting tasks failed`);
                 return;
             }
@@ -87,7 +87,7 @@ function UserDashboard() {
     };
 
 
-    //fetch assignees for user
+    //fetch assignees within user's team
     const getAssignees = async () => {
         try {
             const response = await fetch("/api/assignees", {
@@ -95,14 +95,14 @@ function UserDashboard() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-            })
+            });
             
             if (response.ok) {
                 const data = await response.json();
                 setAssigneeOptions(data);
             } 
             else {
-                console.log("Failed to get assignees for user: ", response)
+                console.log("Failed to get assignees for user: ", response);
                 alert(`${response.statusText}` || `Getting assignees for the user failed`);
                 return;
             }
@@ -126,8 +126,8 @@ function UserDashboard() {
         setTaskDescription("");
         setTaskDeadline("");
         setTaskAssignee("");
-        setTaskStatus("Created")
-        setTaskPriority("Medium")
+        setTaskStatus("Created");
+        setTaskPriority("Medium");
         setDisplayAddEditForm(false);
     }
 
@@ -188,7 +188,7 @@ function UserDashboard() {
         setTaskDeadline(task.deadline);
         setTaskAssignee(task.assignee);
         setTaskStatus(task.status);
-        setTaskPriority(task.priority)
+        setTaskPriority(task.priority);
         setDisplayAddEditForm(true);
     };
 
@@ -218,33 +218,34 @@ function UserDashboard() {
         }
     };
 
+
     //handle filtering tasks
     const getFilteredTasks = () => {
-    if (!filterBy || !filterValue) {
-        return tasks;
-    }
+        if (!filterBy || !filterValue) {
+            return tasks;
+        }
 
-    const filtered = {};
-    
-    Object.keys(tasks).forEach((status) => {
-        filtered[status] = tasks[status].filter((task) => {
-            const filterValueLower = filterValue.toLowerCase();
-            
-            switch(filterBy) {
-                case "name":
-                    return task.name && task.name.toLowerCase().includes(filterValueLower);
-                case "priority":
-                    return task.priority && task.priority.toLowerCase().includes(filterValueLower);
-                case "deadline":
-                    return task.deadline && task.deadline.includes(filterValue);
-                default:
-                    return true;
-            }
+        const filtered = {};
+        
+        Object.keys(tasks).forEach((status) => {
+            filtered[status] = tasks[status].filter((task) => {
+                const filterValueLower = filterValue.toLowerCase();
+                
+                switch(filterBy) {
+                    case "name":
+                        return task.name && task.name.toLowerCase().includes(filterValueLower);
+                    case "priority":
+                        return task.priority && task.priority.toLowerCase().includes(filterValueLower);
+                    case "deadline":
+                        return task.deadline && task.deadline.includes(filterValue);
+                    default:
+                        return true;
+                }
+            });
         });
-    });
-    
-    return filtered;
-};
+        
+        return filtered;
+    };
 
     return (
         <div style={{ maxWidth: "100%", overflow: "hidden" }}>
