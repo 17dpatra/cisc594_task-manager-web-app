@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 function LoginRegister({ setIsAuthenticated }) {    
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [role, setRole] = useState('user'); //default role is 'user'
+    const [role, setRole] = useState('USER'); //default role is 'user'
 
     const navigate = useNavigate();
 
@@ -16,8 +16,8 @@ function LoginRegister({ setIsAuthenticated }) {
 
         const endpoint =
             action === "login"
-            ? "/api/auth/login"
-            : "/api/auth/register";
+            ? "/api/v1/auth/login"
+            : "/api/v1/auth/register";
         
         //validation: incomplete info
         if (!username|| !password) {
@@ -32,7 +32,7 @@ function LoginRegister({ setIsAuthenticated }) {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({username, password, role}),
+                body: JSON.stringify({username, password, roles: [role] }),
             });
             const data = await response.json();
             console.log(data);
@@ -93,9 +93,9 @@ function LoginRegister({ setIsAuthenticated }) {
                         <label className="checkbox-label">
                             <input
                             type="checkbox"
-                            checked={role === "admin"}
+                            checked={role === "GLOBAL_ADMIN"}
                             onChange={(e) =>
-                                setRole(e.target.checked ? "admin" : "user")
+                                setRole(e.target.checked ? "GLOBAL_ADMIN" : "USER")
                             }
                             />
                             <span>Admin rights?</span>
