@@ -7,10 +7,8 @@ import UserDashboard from './pages/UserDashboard';
 import TeamDashboard from './pages/TeamDashboard';
 import Calendar from './pages/Calendar';
 import AdminControls from './pages/AdminControls';
-import { AuthContext } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 
-//TODO: once register and login endpoints are working, uncomment protected route stuff
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false); //only allows other routes to be accessible after successful login
@@ -20,15 +18,16 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<LoginRegister setIsAuthenticated={setIsAuthenticated}/>} />
-          {/* <Route 
+
+          {/* User can only view other pages, if they login/register successfully */}
+          <Route 
             path="/app" 
             element={
                 <ProtectedRoute isAuthenticated={isAuthenticated}>
                   <DashboardsLayout />
                 </ProtectedRoute>
             }
-          > */}
-          <Route path="/app" element={<DashboardsLayout />} >
+          >
             <Route path="userdashboard" element={<UserDashboard />} />
             <Route path="teamdashboard" element={<TeamDashboard />} />
             <Route path="calendar" element={<Calendar />} />
