@@ -8,6 +8,5 @@ import java.util.Set;
 public record UserResponse(long id,
                            String username,
                            String displayName,
-                           Set<UserRole> roles,
-                           Set<UserTeamMembership> memberships) {
+                           Set<UserRole> roles) {
 }

@@ -1,5 +1,6 @@
 package io.taskmanager.authentication.controller;
 
+import io.taskmanager.authentication.SecurityUtils;
 import io.taskmanager.authentication.dto.user.UserRequest;
 import io.taskmanager.authentication.dto.user.UserResponse;
 import io.taskmanager.authentication.service.UserService;
@@ -33,6 +34,11 @@ public class UserController {
         UserResponse response = userService.getUserById(id);
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserResponse> getLoggedInUserDetails() {
+        return getUserById(SecurityUtils.getCurrentUserId());
     }
 
     @GetMapping
