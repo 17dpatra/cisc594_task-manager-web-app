@@ -39,7 +39,7 @@ public class JwtTokenService {
 
         return Jwts.builder()
                 .setSubject(user.getUsername())
-                .claim("username", roles)
+                .claim("id", user.id())
                 .claim("roles", roles)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationMs))

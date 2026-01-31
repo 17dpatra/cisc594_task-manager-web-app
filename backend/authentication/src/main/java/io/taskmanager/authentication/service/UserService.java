@@ -111,8 +111,7 @@ public class UserService implements UserDetailsService {
                 user.getId(),
                 user.getUsername(),
                 user.getDisplayName(),
-                new HashSet<>(user.getRoles()),
-                new HashSet<>(user.getMemberships())
+                new HashSet<>(user.getRoles())
         );
     }
 }
