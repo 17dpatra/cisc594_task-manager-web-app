@@ -23,11 +23,14 @@ const initialTasks = {
     ]
 };
 
-const statusOrder = ["created", "in-progress", "validating", "completed"];
+const statusOrder = ["created", 
+    //"in-progress", 
+    //"validating",
+    "completed"];
 const statusColors = {
     created: "#ea6671",
-    "in-progress": "#f6ad55",
-    validating: "#686ad3",
+    //"in-progress": "#f6ad55",
+    //validating: "#686ad3",
     completed: "#45cf4e"
 };
 

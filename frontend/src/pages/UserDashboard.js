@@ -22,17 +22,21 @@ const initialTasks = {
     ]
 };
 
-const statusOrder = ["created", "in-progress", "validating", "completed"];
+const statusOrder = ["created", 
+    //"in-progress", 
+    //"validating", 
+    "completed"];
 const statusColors = {
     created: "#ea6671",
-    "in-progress": "#f6ad55",
-    validating: "#686ad3",
+    //"in-progress": "#f6ad55",
+    //validating: "#686ad3",
     completed: "#45cf4e"
 };
 
 function UserDashboard() {
     const { user } = useContext(AuthContext); //user's details
     const [currentDate] = useState(new Date());
+    const token = localStorage.getItem("token");
 
     const [openStatus, setOpenStatus] = useState(null);
 
@@ -66,10 +70,11 @@ function UserDashboard() {
     //fetch tasks from backend on component mount
     const getTasks = async () => {
         try {
-            const response = await fetch("/api/tasks/username", {
+            const response = await fetch(`/api/v1/tasks/get_tasks/${user.id}`, {
                 method: "GET",
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
             });
             
@@ -152,7 +157,7 @@ function UserDashboard() {
         }
 
         //determine if adding or editing
-        const url = editingTask ? `/api/edittask/${editingTask.id}` : "/api/addtask";
+        const url = editingTask ? `/api/v1/tasks/update_task/${editingTask.id}` : "/api/v1/tasks/addtask";
         const method = editingTask ? "PUT" : "POST";
 
         //request to backend to add or edit a task
@@ -201,7 +206,7 @@ function UserDashboard() {
         if (!window.confirm("Are you sure you want to delete this task?")) return;
 
         try {
-            const response = await fetch(`/api/deletetask/${taskId}`, {
+            const response = await fetch(`/api/v1/tasks/delete_task/${taskId}`, {
                 method: "DELETE",
             });
 
@@ -414,7 +419,7 @@ function UserDashboard() {
                             background: "#f9f9f9"
                             }}
                             >
-                                {getFilteredTasks()[status].length === 0 ? (
+                                {getFilteredTasks()[status]?.length === 0 ? (
                                     <p style={{ color: "#888" }}>No tasks</p>
                                     ) : 
                                     (

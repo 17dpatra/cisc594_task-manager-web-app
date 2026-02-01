@@ -1,12 +1,15 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import './styles/DashboardsLayout.css';
 import { AuthContext } from '../context/AuthContext';
 
 function DashboardsLayout() {
-  const { user } = useContext(AuthContext); //user's details
+  const { setUser } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
+  const [displayAdmin, setAdminDisplay] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const location = useLocation();
+  const token = localStorage.getItem("token");
 
   //check if on the root path (no child route selected)
   //controls when to view dashboard directions and when to hide
@@ -16,6 +19,49 @@ function DashboardsLayout() {
   const handleDropdownItemClick = () => {
     setDropdownOpen(false);
   };
+
+  //GET request to get the user's ID and role
+  const getUserIdAndRole = async () => {
+    try {
+        const response = await fetch("/api/v1/users/me", {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          credentials: 'include'
+        });
+        const data = await response.json();
+        
+        if (!response.ok) {
+            alert(`${data.error}: ${data.message}` || `Getting UserID and Role failed`);
+            return;
+        }
+        else {
+          setUser(data)
+          console.log(data)
+          if (data.roles[0] == "GLOBAL_ADMIN") {
+            setAdminDisplay(true)
+          }
+          else {
+            setAdminDisplay(false);
+          }
+        }
+    }
+    catch (error) {
+        console.error(`Error:`, error);
+        alert("Something went wrong.");
+    }
+  };
+
+  //get user id and role on component mount
+  useEffect(() => {
+      getUserIdAndRole();
+  }, []);
+
+  if (displayAdmin == null) {
+    return <div>Loading data...</div>
+  }
 
   return (
     <div className="dashboards-layout">
@@ -41,7 +87,9 @@ function DashboardsLayout() {
           <Link to="/app/calendar" className="nav-link">Calendar</Link>
         </div>
         <div>
-          <Link to="/app/admincontrols" className="nav-link">Admin Controls</Link>
+          {displayAdmin && (
+            <Link to="/app/admincontrols" className="nav-link">Admin Controls</Link>
+          )}
         </div>
       </nav>
       <main className="content">

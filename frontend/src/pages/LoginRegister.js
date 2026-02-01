@@ -41,6 +41,9 @@ function LoginRegister({ setIsAuthenticated }) {
                 alert(`${data.error}: ${data.message}` || `${action} failed`);
                 return;
             }
+            else {
+                localStorage.setItem("token", data.token);
+            }
 
             if (action === "login") {
                 alert("Login successful!");
