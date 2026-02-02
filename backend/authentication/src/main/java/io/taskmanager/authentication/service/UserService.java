@@ -89,6 +89,7 @@ public class UserService implements UserDetailsService {
         return new UserPrincipal(
                 user.getId(),
                 user.getUsername(),
+                user.getPasswordHash(),
                 user.isEnabled(),
                 user.getRoles().stream()
                         .map(Enum::name)
