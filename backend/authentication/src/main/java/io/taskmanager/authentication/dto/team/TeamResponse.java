@@ -8,5 +8,5 @@ public record TeamResponse(
         String name,
         Long createdBy,
         Instant createdAt,
-        Set<TeamMembershipResponse> members
+        Set<TeamMember> members
 ) {}

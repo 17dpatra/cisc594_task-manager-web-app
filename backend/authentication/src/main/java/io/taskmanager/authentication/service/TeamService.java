@@ -5,10 +5,10 @@ import io.taskmanager.authentication.dao.AppUserRepository;
 import io.taskmanager.authentication.dao.TeamRepository;
 import io.taskmanager.authentication.dao.UserTeamMembershipRepository;
 import io.taskmanager.authentication.domain.team.Team;
-import io.taskmanager.authentication.domain.team.TeamRole;
+import io.taskmanager.authentication.dto.team.TeamRole;
 import io.taskmanager.authentication.domain.user.User;
 import io.taskmanager.authentication.domain.user.UserTeamMembership;
-import io.taskmanager.authentication.dto.team.TeamMembershipResponse;
+import io.taskmanager.authentication.dto.team.TeamMember;
 import io.taskmanager.authentication.dto.team.TeamRequest;
 import io.taskmanager.authentication.dto.team.TeamResponse;
 import io.taskmanager.authentication.dto.user.UserPrincipal;
@@ -51,7 +51,7 @@ public class TeamService {
     }
 
     @Transactional
-    public List<TeamMembershipResponse> getTeamMembers(Long teamId) {
+    public List<TeamMember> getTeamMembers(Long teamId) {
         teamRepo.findById(teamId).orElseThrow(() -> new NotFoundException(teamId));
 
         Long requesterId = SecurityUtils.getCurrentUserId();
@@ -61,7 +61,7 @@ public class TeamService {
         }
 
         return membershipRepo.findByTeamId(teamId).stream()
-                .map(m -> new TeamMembershipResponse(
+                .map(m -> new TeamMember(
                         m.getId().getUserId(),
                         m.getRole()
                 ))
@@ -133,9 +133,9 @@ public class TeamService {
             }
         }
 
-        if (req.upsertMembers() != null) {
-            for (TeamRequest.MemberUpsert m : req.upsertMembers()) {
-                if (m == null || m.userId() == null || m.userId().equals(SecurityUtils.getCurrentUserId())) continue;
+        if (req.addMembers() != null) {
+            for (TeamMember m : req.addMembers()) {
+                if (m == null || m.userId() == 0 || m.userId() == SecurityUtils.getCurrentUserId()) continue;
 
 
                 User user = userService.getReferenceById(m.userId());
@@ -193,7 +193,7 @@ public class TeamService {
                 t.getName(),
                 t.getCreatedBy(),
                 t.getCreatedAt(),
-                t.getMemberships().stream().map(it -> new TeamMembershipResponse(it.getId().getUserId(), it.getRole())).collect(Collectors.toSet())
+                t.getMemberships().stream().map(it -> new TeamMember(it.getId().getUserId(), it.getRole())).collect(Collectors.toSet())
         );
     }
 }

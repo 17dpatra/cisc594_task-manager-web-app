@@ -1,5 +1,6 @@
 package io.taskmanager.authentication.domain.team;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import io.taskmanager.authentication.domain.user.UserTeamMembership;
 import jakarta.persistence.*;
 
@@ -9,6 +10,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "teams")
+@Hidden
 public class Team {
 
     @Id

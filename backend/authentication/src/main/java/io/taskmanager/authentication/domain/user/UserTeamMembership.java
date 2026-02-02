@@ -1,11 +1,13 @@
 package io.taskmanager.authentication.domain.user;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import io.taskmanager.authentication.domain.team.Team;
-import io.taskmanager.authentication.domain.team.TeamRole;
+import io.taskmanager.authentication.dto.team.TeamRole;
 import jakarta.persistence.*;
 
 import java.time.Instant;
 
+@Hidden
 @Entity
 @Table(name = "user_teams")
 public class UserTeamMembership {

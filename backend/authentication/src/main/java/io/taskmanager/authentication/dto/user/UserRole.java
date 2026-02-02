@@ -1,4 +1,4 @@
-package io.taskmanager.authentication.domain.user;
+package io.taskmanager.authentication.dto.user;
 
 public enum UserRole {
     USER,

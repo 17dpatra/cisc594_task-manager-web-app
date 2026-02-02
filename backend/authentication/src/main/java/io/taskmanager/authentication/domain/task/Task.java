@@ -1,10 +1,12 @@
 package io.taskmanager.authentication.domain.task;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.*;
 import io.taskmanager.authentication.domain.user.*;
 
 @Entity
 @Table(name = "tasks")
+@Hidden
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

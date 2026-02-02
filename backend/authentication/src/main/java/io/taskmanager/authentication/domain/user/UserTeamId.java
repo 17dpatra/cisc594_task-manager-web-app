@@ -1,10 +1,12 @@
 package io.taskmanager.authentication.domain.user;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.Embeddable;
 
 import java.io.Serializable;
 import java.util.Objects;
 
+@Hidden
 @Embeddable
 public class UserTeamId implements Serializable {
     private long userId;

@@ -1,5 +1,7 @@
 package io.taskmanager.authentication.domain.user;
 
+import io.swagger.v3.oas.annotations.Hidden;
+import io.taskmanager.authentication.dto.user.UserRole;
 import jakarta.persistence.*;
 
 import java.time.Instant;
@@ -8,6 +10,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "users")
+@Hidden
 public class User {
 
     @Id

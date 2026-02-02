@@ -1,7 +1,7 @@
 package io.taskmanager.authentication.controller;
 
 
-import io.taskmanager.authentication.dto.team.TeamMembershipResponse;
+import io.taskmanager.authentication.dto.team.TeamMember;
 import io.taskmanager.authentication.dto.team.TeamRequest;
 import io.taskmanager.authentication.dto.team.TeamResponse;
 import io.taskmanager.authentication.dto.user.UserPrincipal;
@@ -49,7 +49,7 @@ public class TeamsController {
     }
 
     @GetMapping("/{teamId}/users")
-    public List<TeamMembershipResponse> getTeamsUser(@PathVariable Long teamId) {
+    public List<TeamMember> getTeamsUser(@PathVariable Long teamId) {
         return teams.getTeamMembers(teamId);
     }
 

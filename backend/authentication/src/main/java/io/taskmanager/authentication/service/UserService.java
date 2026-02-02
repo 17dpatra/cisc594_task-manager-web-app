@@ -4,7 +4,7 @@ import io.taskmanager.authentication.SecurityUtils;
 import io.taskmanager.authentication.controller.UserController;
 import io.taskmanager.authentication.dao.AppUserRepository;
 import io.taskmanager.authentication.domain.user.User;
-import io.taskmanager.authentication.domain.user.UserRole;
+import io.taskmanager.authentication.dto.user.UserRole;
 import io.taskmanager.authentication.dto.user.UserPrincipal;
 import io.taskmanager.authentication.dto.user.UserRequest;
 import io.taskmanager.authentication.dto.user.UserResponse;
@@ -89,7 +89,6 @@ public class UserService implements UserDetailsService {
         return new UserPrincipal(
                 user.getId(),
                 user.getUsername(),
-                user.getPasswordHash(),
                 user.isEnabled(),
                 user.getRoles().stream()
                         .map(Enum::name)

@@ -1,7 +1,7 @@
 package io.taskmanager.authentication;
 
 
-import io.taskmanager.authentication.domain.user.UserRole;
+import io.taskmanager.authentication.dto.user.UserRole;
 import io.taskmanager.authentication.dto.user.UserPrincipal;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,9 +36,8 @@ public final class SecurityUtils {
     /**
      * @return current user id or null
      */
-    public static Long getCurrentUserId() {
-        UserPrincipal user = getCurrentUser();
-        return user != null ? user.id() : null;
+    public static long getCurrentUserId() {
+        return requireCurrentUser().id();
     }
 
     /**

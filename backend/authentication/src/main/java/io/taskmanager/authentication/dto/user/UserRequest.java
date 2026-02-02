@@ -1,6 +1,5 @@
 package io.taskmanager.authentication.dto.user;
 
-import io.taskmanager.authentication.domain.user.UserRole;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
