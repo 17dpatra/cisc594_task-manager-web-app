@@ -1,8 +1,10 @@
 package io.taskmanager.authentication.controller;
 
 import io.taskmanager.authentication.SecurityUtils;
+import io.taskmanager.authentication.dto.task.TeamTaskResponse;
 import io.taskmanager.authentication.dto.user.UserRequest;
 import io.taskmanager.authentication.dto.user.UserResponse;
+import io.taskmanager.authentication.service.TaskService;
 import io.taskmanager.authentication.service.UserService;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -11,15 +13,18 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/v1/users")
 public class UserController {
 
     private final UserService userService;
+    private final TaskService taskService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, TaskService taskService) {
         this.userService = userService;
+        this.taskService = taskService;
     }
 
     @PostMapping
@@ -52,5 +57,10 @@ public class UserController {
         userService.deleteUser(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/tasks/teams/{teamId}")
+    public Map<String, List<TeamTaskResponse>> getTeamTasksGrouped(@PathVariable Long teamId) {
+        return taskService.getTeamTasksGroupedByStatus(teamId);
     }
 }

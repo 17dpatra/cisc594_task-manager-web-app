@@ -1,55 +1,57 @@
 package io.taskmanager.authentication.controller;
 
-import java.util.List;
-import java.util.Map;
-
-import io.taskmanager.authentication.dao.TaskRepository;
-import io.taskmanager.authentication.domain.task.Task;
 import io.taskmanager.authentication.dto.task.TaskRequest;
 import io.taskmanager.authentication.dto.task.TaskResponse;
-import io.taskmanager.authentication.exception.NotFoundException;
 import io.taskmanager.authentication.service.TaskService;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/api/v2/tasks")
-public class TaskController {
-    private final TaskService taskService;
-    private final TaskRepository taskRepository;
+import java.util.List;
 
-    public TaskController(TaskRepository taskRepository, TaskService taskService) {
-        this.taskRepository = taskRepository;
+@RestController
+@RequestMapping("/api/v1/tasks")
+public class TaskController {
+
+    private final TaskService taskService;
+
+    public TaskController(TaskService taskService) {
         this.taskService = taskService;
     }
 
-    @PostMapping("/create_task")
-    public List<TaskResponse> createTask(TaskRequest taskRequest) {
-        // Implementation for creating a task can be added here
-        return taskService.createTask(taskRequest);
+    // CREATE
+    @PostMapping
+    public ResponseEntity<TaskResponse> createTask(@Valid @RequestBody TaskRequest taskRequest) {
+        return ResponseEntity.ok(taskService.createTask(taskRequest));
     }
 
-    @GetMapping("/get_tasks")
-    public Map<String, List<Task>> getTasks(@RequestParam Long userId) {
-        return taskService.getTasksGroupedByStatus(userId);
+    @PutMapping("/{taskId}")
+    public ResponseEntity<TaskResponse> updateTask(
+            @PathVariable Long taskId,
+            @Valid @RequestBody TaskRequest taskRequest
+    ) {
+        return ResponseEntity.ok(taskService.updateTask(taskId, taskRequest));
     }
 
-    @PutMapping("/update_task/{user_id}")
-    public TaskResponse updateTask(@PathVariable Long user_id, @RequestBody Task task) {
-        Task updatTask = taskRepository.findById(user_id)
-                .orElseThrow(() -> new NotFoundException("Task id not found: " + user_id));
-        return taskService.updateTask(updatTask);
-    }
-    
-    @DeleteMapping("/delete_task/{user_id}/{taskId}")
-    public void deleteTask(@PathVariable Long user_id, @PathVariable Long taskId) {
-        taskService.deleteTask(user_id, taskId);
+    // GET ALL
+    // GET /api/v1/tasks
+    @GetMapping
+    public ResponseEntity<List<TaskResponse>> getAllTasks() {
+        return ResponseEntity.ok(taskService.getAllTasks());
     }
 
-    @GetMapping("/filter_tasks")
-    public List<TaskResponse> filterTasks(@RequestParam String status, @RequestParam Long userId) {
-        return taskService.filterTasks(status, userId);
+    // GET BY ID
+    // GET /api/v1/tasks/{taskId}
+    @GetMapping("/{taskId}")
+    public ResponseEntity<TaskResponse> getTaskById(@PathVariable("taskId") Long taskId) {
+        return ResponseEntity.ok(taskService.getTaskById(taskId));
     }
 
-    // update task does not need taskid in the path, it is in the body
-
+    // DELETE
+    // DELETE /api/v1/tasks/{taskId}
+    @DeleteMapping("/{taskId}")
+    public ResponseEntity<Void> deleteTask(@PathVariable("taskId") Long taskId) {
+        taskService.deleteTask(taskId);
+        return ResponseEntity.noContent().build();
+    }
 }

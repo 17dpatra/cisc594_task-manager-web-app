@@ -1,12 +1,16 @@
 package io.taskmanager.authentication.dto.task;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDate;
 
+
 public record TaskRequest(
-        Long id,
         String title,
         String description,
-        String status, // TODO, IN_PROGRESS, COMPLETED
-        String priority, // LOW, MEDIUM, HIGH
-        LocalDate dueDate
+        TaskStatus status,
+        String priority,
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+        LocalDate dueDate,
+        Long assignedUserId
 ) {}

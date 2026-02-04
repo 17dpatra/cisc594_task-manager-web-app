@@ -1,7 +1,7 @@
 package io.taskmanager.authentication.service;
 
 import io.taskmanager.authentication.SecurityUtils;
-import io.taskmanager.authentication.dao.AppUserRepository;
+import io.taskmanager.authentication.dao.UserRepository;
 import io.taskmanager.authentication.dao.TeamRepository;
 import io.taskmanager.authentication.dao.UserTeamMembershipRepository;
 import io.taskmanager.authentication.domain.team.Team;
@@ -26,10 +26,10 @@ public class TeamService {
 
     private final TeamRepository teamRepo;
     private final UserTeamMembershipRepository membershipRepo;
-    private final AppUserRepository userService;
+    private final UserRepository userService;
 
     public TeamService(TeamRepository teamRepo,
-                       UserTeamMembershipRepository membershipRepo, AppUserRepository userService) {
+                       UserTeamMembershipRepository membershipRepo, UserRepository userService) {
         this.teamRepo = teamRepo;
         this.membershipRepo = membershipRepo;
         this.userService = userService;

@@ -2,7 +2,7 @@ package io.taskmanager.authentication.service;
 
 import io.taskmanager.authentication.SecurityUtils;
 import io.taskmanager.authentication.controller.UserController;
-import io.taskmanager.authentication.dao.AppUserRepository;
+import io.taskmanager.authentication.dao.UserRepository;
 import io.taskmanager.authentication.domain.user.User;
 import io.taskmanager.authentication.dto.user.UserRole;
 import io.taskmanager.authentication.dto.user.UserPrincipal;
@@ -25,10 +25,10 @@ import java.util.List;
 @Service
 @Transactional
 public class UserService implements UserDetailsService {
-    private final AppUserRepository userRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder   passwordEncoder;
 
-    public UserService(AppUserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }

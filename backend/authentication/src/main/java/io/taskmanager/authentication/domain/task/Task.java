@@ -1,10 +1,10 @@
 package io.taskmanager.authentication.domain.task;
 
 import io.swagger.v3.oas.annotations.Hidden;
+import io.taskmanager.authentication.domain.user.User;
+import io.taskmanager.authentication.dto.task.TaskStatus;
 import jakarta.persistence.*;
-import io.taskmanager.authentication.domain.user.*;
 
-import java.time.Instant;
 import java.time.LocalDate;
 
 @Entity
@@ -17,8 +17,14 @@ public class Task {
 
     private String title;
     private String description;
-    private String status; // TODO, IN_PROGRESS, COMPLETED
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TaskStatus status;
+
     private String priority;
+
+    @Column(name = "due_date")
     private LocalDate dueDate;
 
     @ManyToOne
@@ -30,68 +36,27 @@ public class Task {
     private User assignedTo;
 
     // getters/setters
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
 
-    public String getTitle() {
-        return title;
-    }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+    public TaskStatus getStatus() { return status; }
+    public void setStatus(TaskStatus status) { this.status = status; }
 
-    public String getDescription() {
-        return description;
-    }
+    public String getPriority() { return priority; }
+    public void setPriority(String priority) { this.priority = priority; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public LocalDate getDueDate() { return dueDate; }
+    public void setDueDate(LocalDate dueDate) { this.dueDate = dueDate; }
 
-    public String getStatus() {
-        return status;
-    }
+    public User getCreatedBy() { return createdBy; }
+    public void setCreatedBy(User createdBy) { this.createdBy = createdBy; }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getPriority() {
-        return priority;
-    }
-
-    public void setPriority(String priority) {
-        this.priority = priority;
-    }
-
-    public LocalDate getDueDate() {
-        return dueDate;
-    }
-
-    public void setDueDate(LocalDate dueDate) {
-        this.dueDate = dueDate;
-    }
-
-    public User getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public User getAssignedTo() {
-        return assignedTo;
-    }
-
-    public void setAssignedTo(User assignedTo) {
-        this.assignedTo = assignedTo;
-    }
-    
+    public User getAssignedTo() { return assignedTo; }
+    public void setAssignedTo(User assignedTo) { this.assignedTo = assignedTo; }
 }

@@ -1,0 +1,2 @@
+ALTER TABLE tasks
+    MODIFY user_id BIGINT NULL;
