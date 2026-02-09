@@ -43,6 +43,13 @@ public class TaskController {
         return ResponseEntity.ok(taskService.getAllTasks());
     }
 
+    @GetMapping("/get_tasks_grouped_for_user")
+    public ResponseEntity<Map<String, List<TaskResponse>>> getTasksGroupedForUser(
+            @RequestParam Long userId
+    ) {
+        return ResponseEntity.ok(taskService.getTasksGroupedByStatusForUser(userId));
+    }
+
     // GET ALL
     // GET /api/v1/tasks/get_tasks/team/{teamId}
     @GetMapping("/get_tasks/team/{teamId}")

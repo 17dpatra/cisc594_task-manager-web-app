@@ -124,6 +124,31 @@ public class TaskService {
         return grouped;
     }
 
+    //get tasks grouped by the status for the user
+    @Transactional(readOnly = true)
+    public Map<String, List<TaskResponse>> getTasksGroupedByStatusForUser(Long userId) {
+        //Create userId list with 1 userid
+        List<Long> userIdList = new ArrayList<>();
+        userIdList.add(userId);
+        // Fetch all tasks assigned to this user
+        List<Task> tasks = taskRepository.findByAssignedToIds(userIdList);
+
+        // Initialize map with empty lists
+        Map<String, List<TaskResponse>> grouped = new LinkedHashMap<>();
+        grouped.put("created", new ArrayList<>());
+        grouped.put("in-progress", new ArrayList<>());
+        grouped.put("validating", new ArrayList<>());
+        grouped.put("completed", new ArrayList<>());
+
+        // Populate map
+        for (Task task : tasks) {
+            String key = toDashboardKey(task.getStatus()); // reuse your existing method
+            grouped.get(key).add(toTaskResponse(task));
+        }
+
+        return grouped;
+    }
+
     // GET ALL TASKS
     @Transactional(readOnly = true)
     public List<TaskResponse> getAllTasks() {
