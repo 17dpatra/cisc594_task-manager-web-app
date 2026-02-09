@@ -1,5 +1,6 @@
 package io.taskmanager.authentication.controller;
 
+import io.taskmanager.authentication.domain.task.Task;
 import io.taskmanager.authentication.dto.task.TaskRequest;
 import io.taskmanager.authentication.dto.task.TaskResponse;
 import io.taskmanager.authentication.dto.task.TeamTaskResponse;
@@ -48,6 +49,16 @@ public class TaskController {
     public ResponseEntity<Map<String, List<TeamTaskResponse>>> getAllTasks(@PathVariable Long teamId) {
         return ResponseEntity.ok(taskService.getTeamTasksGroupedByStatus(teamId));
     }
+
+    @GetMapping("/user/team/{userId}")
+    public ResponseEntity<Map<String, List<Task>>> getTeamTasks(
+        @PathVariable Long userId) {
+
+    return ResponseEntity.ok(
+            taskService.getTeamTasksByUser(userId)
+    );
+}
+
 
     // GET BY ID
     // GET /api/v1/tasks/{taskId}
