@@ -2,26 +2,6 @@ import { useState, useEffect, useContext } from 'react';
 import './styles/UserDashboard.css';
 import { AuthContext } from '../context/AuthContext';
 
-//TODO: call valid API for getting, adding, editing, deleting user's tasks
-//TODO: call valid API for getting all assignee options
-
-//dummy values for testing
-const initialTasks = {
-    created: [
-        { id: "task-1", name: "Set up repo" },
-        { id: "task-2", name: "Design database" }
-    ],
-    "in-progress": [
-        { id: "task-3", name: "Implement login form" }
-    ],
-    validating: [
-        { id: "task-4", name: "Write unit tests" }
-    ],
-    completed: [
-        { id: "task-5", name: "Deploy app" }
-    ]
-};
-
 const statusOrder = [
     "created", 
     "in-progress", 
@@ -55,15 +35,11 @@ function UserDashboard() {
     const [taskName, setTaskName] = useState("");
     const [taskDescription, setTaskDescription] = useState("");
     const [taskDeadline, setTaskDeadline] = useState("");
-    const [taskAssignee, setTaskAssignee] = useState("");
     const [taskStatus, setTaskStatus] = useState("Created");
     const [taskPriority, setTaskPriority] = useState("Medium");
 
     //get tasks
-    const [tasks, setTasks] = useState(initialTasks);// useState([]) - should be null in the beginning. Just set to initial tasks as a dummy for now
-
-    //get possible assignees (can be anyone in user's team)
-    const [assigneeOptions, setAssigneeOptions] = useState([]);
+    const [tasks, setTasks] = useState([]);
     
     //filtering
     const [filterBy, setFilterBy] = useState("");
@@ -72,7 +48,7 @@ function UserDashboard() {
     //fetch tasks from backend on component mount
     const getTasks = async () => {
         try {
-            const response = await fetch(`/api/v2/tasks/get_tasks?userId=${user.id}`, {
+            const response = await fetch(`/api/v2/tasks/get_tasks_grouped_for_user?userId=${user.id}`, {
                 method: "GET",
                 headers: {
                     'Content-Type': 'application/json',
@@ -94,38 +70,11 @@ function UserDashboard() {
             console.error("Error getting tasks:", error);
         }
     };
+    
 
-
-    //fetch assignees within user's team
-    const getAssignees = async () => {
-        try {
-            const response = await fetch("/api/assignees", {
-                method: "GET",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-            });
-            
-            if (response.ok) {
-                const data = await response.json();
-                setAssigneeOptions(data);
-            } 
-            else {
-                console.log("Failed to get assignees for user: ", response);
-                alert(`${response.statusText}` || `Getting assignees for the user failed`);
-                return;
-            }
-        }
-        catch (error) {
-            console.error("Error getting assignees for user:", error);
-        }
-    };
-
-
-    //get tasks and assignees on component mount
+    //get tasks on component mount
     useEffect(() => {
-        //getTasks();
-        //getAssignees();
+        getTasks();
     }, []);
 
 
@@ -134,7 +83,6 @@ function UserDashboard() {
         setTaskName("");
         setTaskDescription("");
         setTaskDeadline("");
-        setTaskAssignee("");
         setTaskStatus("Created");
         setTaskPriority("Medium");
         setDisplayAddEditForm(false);
@@ -147,20 +95,42 @@ function UserDashboard() {
 
         //validation - all are required
         if (!taskName || !taskDescription || !taskDeadline 
-            || !taskAssignee || !taskStatus || !taskPriority) {
+            || !taskStatus || !taskPriority) {
             alert("All fields are required.");
             return;
         }
 
         //validation - deadline must be after or including today's date
-        if (new Date(taskDeadline) < currentDate) {
-            alert("Task's deadline must be after or including today's date.");
+        const [year, month, day] = taskDeadline.split("-").map(Number);
+        const deadline = new Date(year, month - 1, day); //month is 0-indexed
+
+        // today in local time, midnight
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        //console.log("deadline:", deadline); //now correct
+        //console.log("today:", today);
+
+        if (deadline < today) {
+            alert("Task's deadline must be today or later.");
             return;
         }
 
         //determine if adding or editing
-        const url = editingTask ? `/api/v1/tasks/update_task/${editingTask.id}` : "/api/v2/tasks/create_task";
+        const url = editingTask ? `/api/v2/tasks/${editingTask.id}` : "/api/v2/tasks/create_task";
         const method = editingTask ? "PUT" : "POST";
+
+        let payload = {
+            name: taskName, 
+            description: taskDescription, 
+            deadline: taskDeadline, 
+            assignee: user.id, 
+            status: taskStatus, 
+            priority: taskPriority
+        }
+
+        //console.log("method:", method)
+        //console.log("payload:", payload)
 
         //request to backend to add or edit a task
         try {
@@ -168,8 +138,9 @@ function UserDashboard() {
                 method: method,
                 headers: {
                     "Content-Type": "application/json",
+                    'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({ name: taskName, description: taskDescription, deadline: taskDeadline, assignee: taskAssignee, status: taskStatus, priority: taskPriority }),
+                body: JSON.stringify(payload),
             });
 
             if (response.ok) {
@@ -196,7 +167,6 @@ function UserDashboard() {
         setTaskName(task.name);
         setTaskDescription(task.description);
         setTaskDeadline(task.deadline);
-        setTaskAssignee(task.assignee);
         setTaskStatus(task.status);
         setTaskPriority(task.priority);
         setDisplayAddEditForm(true);
@@ -208,8 +178,12 @@ function UserDashboard() {
         if (!window.confirm("Are you sure you want to delete this task?")) return;
 
         try {
-            const response = await fetch(`/api/v1/tasks/delete_task/${taskId}`, {
+            const response = await fetch(`/api/v2/tasks/${taskId}`, {
                 method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${token}`
+                },
             });
 
             if (response.ok) {
@@ -268,8 +242,8 @@ function UserDashboard() {
                 onChange={(e) => setFilterBy(e.target.value)}
                 >
                     <option value="">-- No Filter --</option>
-                    <option value="name">Name</option>
-                    <option value="priority">Priority</option>
+                    <option value="name">Task Name</option>
+                    <option value="priority">Task Priority</option>
                     <option value="deadline">Deadline</option>
                 </select>
 
@@ -336,27 +310,10 @@ function UserDashboard() {
                             </div>
 
                             <div className="mb-3">
-                                <label className="form-label">Assignee <span className="text-danger">*</span></label>
-                                <select
-                                className="form-control"
-                                value={taskAssignee}
-                                onChange={(e) => setTaskAssignee(e.target.value)}
-                                required
-                                >
-                                    <option value="">-- Select an assignee --</option>
-                                    {assigneeOptions && assigneeOptions.map((assignee) => (
-                                        <option key={assignee.id} value={assignee.id}>
-                                            {assignee.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            <div className="mb-3">
                                 <label className="form-label">Status <span className="text-danger">*</span></label>
                                 <select
                                 value={taskStatus}
-                                onChange={(e) => setTaskPriority(e.target.value)}
+                                onChange={(e) => setTaskStatus(e.target.value)}
                                 >
                                     <option value="created">Created</option>
                                     <option value="in-progress">In-Progress</option>
@@ -368,7 +325,7 @@ function UserDashboard() {
                             <div className="mb-3">
                                 <label className="form-label">Priority <span className="text-danger">*</span></label>
                                 <select
-                                value={taskStatus}
+                                value={taskPriority}
                                 onChange={(e) => setTaskPriority(e.target.value)}
                                 >
                                     <option value="low">Low</option>
@@ -438,7 +395,7 @@ function UserDashboard() {
                                     <p style={{ color: "#888" }}>No tasks</p>
                                     ) : 
                                     (
-                                        getFilteredTasks()[status].map((task) => 
+                                        getFilteredTasks()[status]?.map((task) => 
                                             (
                                                 <div
                                                 key={task.id}
