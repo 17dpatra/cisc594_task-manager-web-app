@@ -15,9 +15,10 @@ import io.taskmanager.authentication.dto.task.TeamTaskResponse;
 import io.taskmanager.authentication.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.*;
 import java.util.stream.Collectors;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 
 @Service
 @Transactional
@@ -160,12 +161,13 @@ public class TaskService {
 
     @Transactional(readOnly = true)
     public Map<String, List<Task>> getTeamTasksByUser(Long userId) {
-
-        // 1. Get team ID(s) for user
         List<Long> teamIds = membershipRepository.findTeamIdsByUserId(userId);
 
         if (teamIds.isEmpty()) {
-            throw new RuntimeException("User is not part of any team");
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, 
+                "User is not part of any team"
+            );
         }
 
         // 2. Assuming single team

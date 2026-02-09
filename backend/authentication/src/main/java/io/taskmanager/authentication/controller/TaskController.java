@@ -12,6 +12,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import java.time.Instant;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import org.springframework.web.server.ResponseStatusException;
+
+
 @RestController
 @RequestMapping("/api/v2/tasks")
 public class TaskController {
@@ -58,13 +67,27 @@ public class TaskController {
     }
 
     @GetMapping("/user/team/{userId}")
-    public ResponseEntity<Map<String, List<Task>>> getTeamTasks(
-        @PathVariable Long userId) {
-
-    return ResponseEntity.ok(
-            taskService.getTeamTasksByUser(userId)
-    );
-}
+    public ResponseEntity<Map<String, Object>> getTeamTasks(@PathVariable Long userId) {
+        Map<String, Object> body = new LinkedHashMap<>();
+        try {
+            Map<String, List<Task>> tasks = taskService.getTeamTasksByUser(userId);
+            body.put("data", tasks);
+            body.put("status", 200);
+            body.put("timestamp", Instant.now());
+            return ResponseEntity.ok(body);
+        } catch (ResponseStatusException ex) {
+            body.put("error", ex.getReason());
+            body.put("status", ex.getStatusCode().value());
+            body.put("timestamp", Instant.now());
+            return ResponseEntity.status(ex.getStatusCode()).body(body);
+        } catch (Exception ex) {
+            body.put("error", "Internal Server Error");
+            body.put("message", ex.getMessage());
+            body.put("status", 500);
+            body.put("timestamp", Instant.now());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+        }
+    }
 
 
     // GET BY ID
