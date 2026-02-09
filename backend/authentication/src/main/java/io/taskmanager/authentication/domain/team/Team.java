@@ -8,6 +8,8 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "teams")
 @Hidden
@@ -26,7 +28,8 @@ public class Team {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
 
-    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<UserTeamMembership> memberships = new HashSet<>();
 
     // getters/setters

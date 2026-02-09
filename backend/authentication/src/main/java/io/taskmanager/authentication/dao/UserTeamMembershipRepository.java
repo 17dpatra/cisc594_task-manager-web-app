@@ -5,6 +5,7 @@ import io.taskmanager.authentication.domain.user.UserTeamId;
 import io.taskmanager.authentication.domain.user.UserTeamMembership;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,4 +26,10 @@ public interface UserTeamMembershipRepository
 
 
     void deleteByUserIdAndTeamId(Long userId, Long teamId);
+
+    @Query("SELECT tm.team.id FROM UserTeamMembership tm WHERE tm.user.id = :userId")
+    List<Long> findTeamIdsByUserId(@Param("userId") Long userId);
+
+    @Query("SELECT tm.user.id FROM UserTeamMembership tm WHERE tm.team.id = :teamId")
+    List<Long> findUserIdsByTeamId(@Param("teamId") Long teamId);
 }

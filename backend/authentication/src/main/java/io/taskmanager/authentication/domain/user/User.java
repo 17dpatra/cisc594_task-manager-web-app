@@ -8,6 +8,8 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "users")
 @Hidden
@@ -35,7 +37,8 @@ public class User {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt = Instant.now();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<UserTeamMembership> memberships = new HashSet<>();
 
     @ElementCollection
@@ -45,6 +48,7 @@ public class User {
     )
     @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
+    @JsonIgnore
     private Set<UserRole> roles = new HashSet<>();
 
     @PreUpdate

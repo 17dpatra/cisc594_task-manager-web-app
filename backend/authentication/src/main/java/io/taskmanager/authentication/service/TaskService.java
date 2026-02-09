@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -130,6 +131,47 @@ public class TaskService {
                 .stream()
                 .map(this::toTaskResponse)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public Map<String, List<Task>> getTeamTasksByUser(Long userId) {
+
+        // 1. Get team ID(s) for user
+        List<Long> teamIds = membershipRepository.findTeamIdsByUserId(userId);
+
+        if (teamIds.isEmpty()) {
+            throw new RuntimeException("User is not part of any team");
+        }
+
+        // 2. Assuming single team
+        Long teamId = teamIds.get(0);
+
+        // 3. Get all user IDs in that team
+        List<Long> teamUserIds =
+                membershipRepository.findUserIdsByTeamId(teamId);
+
+        // 4. Fetch tasks assigned to team members
+        List<Task> tasks =
+                taskRepository.findByAssignedToIds(teamUserIds);
+
+        // 5. Group by status (ordered)
+        return tasks.stream()
+                .sorted(Comparator.comparingInt(this::statusOrder))
+                .collect(Collectors.groupingBy(
+                        t -> toDashboardKey(t.getStatus()),
+                        LinkedHashMap::new,
+                        Collectors.toList()
+                ));
+    }
+
+    private int statusOrder(Task task) {
+        return switch (task.getStatus().name().toLowerCase()) {
+            case "created" -> 1;
+            case "in-progress" -> 2;
+            case "validating" -> 3;
+            case "completed" -> 4;
+            default -> 5;
+        };
     }
 
     // GET TASK BY ID

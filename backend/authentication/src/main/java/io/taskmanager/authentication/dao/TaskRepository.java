@@ -5,8 +5,8 @@ import io.taskmanager.authentication.dto.task.TaskStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
@@ -42,11 +42,12 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     """)
     List<Task> filterTasks(TaskStatus status, Long userId);
 
-    // ✅ Team dashboard: tasks assigned to any member of the team
     @Query("""
-        SELECT t
-        FROM Task t
+        SELECT t FROM Task t
+        JOIN FETCH t.assignedTo
+        JOIN FETCH t.createdBy
         WHERE t.assignedTo.id IN :userIds
     """)
-    List<Task> findByAssignedToIds(Collection<Long> userIds);
+    List<Task> findByAssignedToIds(@Param("userIds") List<Long> userIds);
+
 }
