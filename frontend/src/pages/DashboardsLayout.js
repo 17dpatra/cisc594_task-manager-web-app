@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect, useRef } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import './styles/DashboardsLayout.css';
 import { AuthContext } from '../context/AuthContext';
@@ -10,6 +10,7 @@ function DashboardsLayout() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const location = useLocation();
   const token = localStorage.getItem("token");
+  const dropdownRef = useRef(null); //ref for the dropdown container
 
   //check if on the root path (no child route selected)
   //controls when to view dashboard directions and when to hide
@@ -56,7 +57,23 @@ function DashboardsLayout() {
 
   //get user id and role on component mount
   useEffect(() => {
-      getUserIdAndRole();
+    getUserIdAndRole();
+  }, []);
+
+  
+  useEffect(() => {
+      //adds a click listener to dashboards dropdown
+      const handleClickOutside = (event) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+          setDropdownOpen(false);
+        }
+      };
+
+      document.addEventListener('mousedown', handleClickOutside);
+
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
   }, []);
 
   if (displayAdmin == null) {
@@ -66,30 +83,42 @@ function DashboardsLayout() {
   return (
     <div className="dashboards-layout">
       <nav className="navbar">
-        <div>
+        <div className="nav-left"></div>
+        <div className="nav-center">
           <Link to="/app" className="nav-link">Home</Link>
-        </div>
-        <div className="nav-item dropdown">
-          <button 
-            className="nav-link dropdown-toggle"
-            onClick={() => setDropdownOpen(!dropdownOpen)}
-          >
-            Dashboards
-          </button>
-          {dropdownOpen && (
-            <div className="dropdown-menu">
-              <Link to="/app/userdashboard" className="dropdown-item" onClick={handleDropdownItemClick}>User Dashboard</Link>
-              <Link to="/app/teamdashboard" className="dropdown-item" onClick={handleDropdownItemClick}>Team Dashboard</Link>
-            </div>
-          )}
-        </div>
-        <div>
+            
+          <div className="nav-item dropdown" ref={dropdownRef}>
+            <button 
+              className="nav-link dropdown-toggle"
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+            >
+              Dashboards
+            </button>
+            {dropdownOpen && (
+              <div className="dropdown-menu">
+                <Link to="/app/userdashboard" className="dropdown-item" onClick={handleDropdownItemClick}>User Dashboard</Link>
+                <Link to="/app/teamdashboard" className="dropdown-item" onClick={handleDropdownItemClick}>Team Dashboard</Link>
+              </div>
+            )}
+          </div>
+
           <Link to="/app/calendar" className="nav-link">Calendar</Link>
-        </div>
-        <div>
+          
           {displayAdmin && (
             <Link to="/app/admincontrols" className="nav-link">Admin Controls</Link>
           )}
+        </div>
+        <div className="nav-right">
+          <button 
+            className="nav-link logout-button"
+            onClick={() => {
+              localStorage.removeItem("token");  //clear token
+              setUser(null);                     //clear user context
+              window.location.href = "/";   //redirect to login page
+            }}
+          >
+            Logout
+          </button>
         </div>
       </nav>
       <main className="content">
@@ -103,7 +132,7 @@ function DashboardsLayout() {
               <li>The team's dashboard where you can see all the tasks assigned to your team.</li>
             </ul>
             <p>Click on the Calendar tab to view when each task is due.</p>
-            <p>Click on the Admin Controls tab to make changes to your team.</p>
+            <p>If you are an admin, click on the Admin Controls tab to make changes to your team.</p>
           </>
         )}
         <Outlet />

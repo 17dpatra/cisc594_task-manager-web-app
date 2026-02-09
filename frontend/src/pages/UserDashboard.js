@@ -17,7 +17,6 @@ const statusColors = {
 
 function UserDashboard() {
     const { user } = useContext(AuthContext); //user's details
-    const [currentDate] = useState(new Date());
     const token = localStorage.getItem("token");
 
     const [openStatus, setOpenStatus] = useState(null);
@@ -234,6 +233,7 @@ function UserDashboard() {
     return (
         <div style={{ maxWidth: "100%", overflow: "hidden" }}>
             <h2 className="mb-4" style={{ paddingBottom: "2rem" }}>Your Tasks</h2>
+            <p>Here you can create and manage your own tasks.</p>
             {/* Filter controls */}
             <div className="filter-controls">
                 <label style={{ margin: 0 }}>Filter by:</label>
