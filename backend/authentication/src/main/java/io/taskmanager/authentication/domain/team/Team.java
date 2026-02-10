@@ -28,7 +28,12 @@ public class Team {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
 
-    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
+    @OneToMany(
+            mappedBy = "team",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
     @JsonIgnore
     private Set<UserTeamMembership> memberships = new HashSet<>();
 
