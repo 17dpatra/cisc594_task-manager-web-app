@@ -21,6 +21,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -94,7 +95,7 @@ public class UserService implements UserDetailsService {
                 user.getRoles().stream()
                         .map(Enum::name)
                         .map(SimpleGrantedAuthority::new)
-                        .toList()
+                        .collect(Collectors.toUnmodifiableSet())
         );
     }
 
