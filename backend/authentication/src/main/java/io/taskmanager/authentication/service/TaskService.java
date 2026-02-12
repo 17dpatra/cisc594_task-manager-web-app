@@ -159,6 +159,15 @@ public class TaskService {
                 .toList();
     }
 
+    //Get all tasks for userId
+    @Transactional(readOnly = true)
+    public List<TaskResponse> getTasksForUser(Long userId) {
+        return taskRepository.findByAssigneeId(userId)
+                .stream()
+                .map(this::toTaskResponse)
+                .toList();
+    }
+
     @Transactional(readOnly = true)
     public Map<String, List<Task>> getTeamTasksByUser(Long userId) {
         List<Long> teamIds = membershipRepository.findTeamIdsByUserId(userId);
