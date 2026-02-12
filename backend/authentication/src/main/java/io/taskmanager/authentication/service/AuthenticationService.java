@@ -37,8 +37,8 @@ public class AuthenticationService {
 
         for (UserRole role : request.roles()) {
             boolean hasRole = userPrincipal.authorities().contains(new SimpleGrantedAuthority(role.name()));
-            if (role == UserRole.GLOBAL_ADMIN && !hasRole) {
-                throw new NotAllowedException("Admin privileges required to login as administrator");
+            if (!hasRole) {
+                throw new NotAllowedException("No role=" + role.name() + " found for user " + userPrincipal.username());
             }
         }
         String token;
